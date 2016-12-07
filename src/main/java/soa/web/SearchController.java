@@ -23,6 +23,17 @@ public class SearchController {
     @RequestMapping(value="/search")
     @ResponseBody
     public Object search(@RequestParam("q") String q) {
-        return producerTemplate.requestBodyAndHeader("direct:search", "", "CamelTwitterKeywords", q);
+        //Set of operations for taking the word and the max number.
+				int i= q.indexof("max:");
+				String cadena = q.substring(i);
+				String[] subcadenas = cadena.split(":");
+				cadena = subcadenas[1];
+				Integer cuenta = Integer.parseInt(cadena);
+				q = q.substring(0,i);
+				//Now we work with it for the funcionality
+				Map<String,Object> headers = new HashMap<String,Object>();
+			 headers.put("CamelTwitterKeywords",q);
+			 headers.put("CamelTwitterCount",count);
+			 return producerTemplate.requestBodyAndHeaders("direct:search", "", headers);
     }
 }
